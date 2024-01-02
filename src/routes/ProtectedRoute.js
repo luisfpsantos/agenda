@@ -1,15 +1,18 @@
 import React from 'react';
-import { Navigate } from 'react-router-dom';
+import { Navigate, Outlet } from 'react-router-dom';
 import PropTypes from 'prop-types';
+import { useSelector } from 'react-redux';
 
-export default function ProtectedRoute({ isClosed, prevPath, children }) {
-  const isLoggedIn = false;
+export default function ProtectedRoute({ isClosed, prevPath }) {
+  const isLoggedIn = useSelector(
+    (state) => state.persistedReducer.authReducer.value.isLoggedIn
+  );
 
   if (isClosed && !isLoggedIn) {
     return <Navigate to="/login" state={prevPath} replace />;
   }
 
-  return children;
+  return <Outlet />;
 }
 
 ProtectedRoute.defaultProps = {
@@ -20,6 +23,4 @@ ProtectedRoute.defaultProps = {
 ProtectedRoute.propTypes = {
   isClosed: PropTypes.bool,
   prevPath: PropTypes.string,
-  // eslint-disable-next-line react/forbid-prop-types
-  children: PropTypes.object.isRequired,
 };
